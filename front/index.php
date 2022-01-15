@@ -6,6 +6,7 @@
             <div class="table-list mt-1r mb-1r" id="table-list"></div>
             <div class="mt-1r mb-1r table-info hide" id="table-info"></div>
             <div class="mt-1r mb-1r statis-wrap hide" id="statis-wrap">
+                <h4 id="selected_table"></h4>
                 <button class="btn btn-primary mt-1r mb-1r">Generate</button>
             </div>
         </div>

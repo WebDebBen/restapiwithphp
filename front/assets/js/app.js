@@ -24,6 +24,7 @@ function load_table_list(){
         url: base_api_url + "showtables",
         data: {},
         type: "get",
+        dataType: "json",
         success: function(data ){
             if (data["status"] == "success"){
                 init_table_list(data["data"]);
@@ -49,11 +50,12 @@ function init_table_list(data ){
 
 function load_table_infos(){
     $.ajax({
-        url: base_api_url + "tables/info",
+        url: base_api_url + "tables",
         data: {
-            tables: sel_tables
+            tables: JSON.stringify(sel_tables)
         },
-        type: "get",
+        type: "post",
+        dataType: "json",
         success: function(data ){
             if (data["status"] == "success"){
                 init_table_info(data["data"]);
@@ -63,7 +65,54 @@ function load_table_infos(){
 }
 
 function init_table_info(data ){
-    console.log(data );
+    var parent = $("#table-info");
+    $(parent).html("");
+    var table = $("<table>").addClass("table").appendTo(parent );
+
+    for (var i = 0; i < data.length; i++ ){
+        var item = data[i];
+        var table_name = item["table_name"];
+        var columns = item["columns"];
+        var tr = $("<tr>").appendTo(table );
+        $("<td>").html("<table><tr><td>" + (i + 1) + ". <b>" + table_name + "</b></td></tr></table>").appendTo(tr );
+        var tr = $("<tr>").appendTo(table );
+        var td = $("<td>").appendTo(tr );
+        var sub_table = $("<table>").appendTo(td );
+        var sub_tr = $("<tr>").appendTo(sub_table );
+        $("<td>").text("Column Name").appendTo(sub_tr );
+        $("<td>").text("Column Type").appendTo(sub_tr );
+        $("<td>").text("On Add").appendTo(sub_tr );
+        $("<td>").text("On Update").appendTo(sub_tr );
+        $("<td>").text("Retrieve Total").appendTo(sub_tr );
+        $("<td>").text("Foreign Table").appendTo(sub_tr );
+        $("<td>").text("Accepted").appendTo(sub_tr );
+
+        for (var j = 0; j < columns.length; j++ ){
+            var col_item = columns[j];
+            sub_tr = $("<tr>").appendTo(sub_table );
+            $("<td>").text(col_item["column_name"]).appendTo(sub_tr );
+            $("<td>").text(col_item["column_type"]).appendTo(sub_tr );
+            var sub_td = $("<td>").appendTo(sub_tr );
+            if (col_item["column_default"]){
+                $("<input>").attr("type", "checkbox").appendTo(sub_td );
+            }else{
+                $("<input>").attr("type", "checkbox").attr("checked", true ).attr("disabled", true ).appendTo(sub_td );
+            }
+            var sub_td = $("<td>").appendTo(sub_tr );
+            $("<input>").attr("type", "checkbox").appendTo(sub_td );
+            sub_td = $("<td>").appendTo(sub_tr );
+            $("<input>").attr("type", "checkbox").appendTo(sub_td );
+            $("<td>").text(col_item["referenced_table_name"]).appendTo(sub_tr );
+            sub_td = $("<td>").appendTo(sub_tr );
+            if (col_item["data_type"] == "enum"){
+                $("<input>").val(col_item["column_default"]).appendTo(sub_td );
+            }else{
+                $("<input>").val(col_item["column_default"]).appendTo(sub_td );
+            }
+        }
+        var sub_tr = $("<tr>").appendTo(sub_table );
+        $("<td>").appendTo()
+    }
 }
 
 function prev_wizard(){
@@ -132,6 +181,7 @@ function switch_wizard(index, direction ){
             $("#statis-wrap").removeClass("hide");
             $("#prev_btn").removeClass("hide");
             $("#next_btn").addClass("hide");
+            $("#selected_table").val(count(sel_tables).length + " tables are selected");
             break;
     }
 }
