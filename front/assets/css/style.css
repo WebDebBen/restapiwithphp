@@ -1,0 +1,32 @@
+.mt-1r{
+    margin-top: 1rem;
+}
+
+.m-1r{
+    margin: 1rem;
+}
+
+.mb-1r{
+    margin-bottom: 1rem;
+}
+
+.ml-1r{
+    margin-left: 1rem;
+}
+
+.mr-1r{
+    margin-right: 1rem;
+}
+
+.hide{
+    display: none !important;
+}
+
+.table-box{
+    width: 33.33%;
+}
+
+.table-list{
+    display: flex;
+    flex-wrap: wrap;
+}

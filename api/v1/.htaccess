@@ -1,4 +1,7 @@
 RewriteEngine On
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php/$1 [L]
+
+RewriteRule ^showtables/?$ showtables.php [NC,L]
+RewriteRule ^showtables/([0-9]+)/?$ showtables.php?id=$1 [NC,L]
+
+RewriteRule ^tables/?$ tables.php [NC,L]
+RewriteRule ^tables/([0-9]+)/?$ tables.php?id=$1 [NC,L]
