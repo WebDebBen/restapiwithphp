@@ -102,7 +102,7 @@ function init_table_info(data ){
             $("<input>").attr("type", "checkbox").appendTo(sub_td );
             sub_td = $("<td>").appendTo(sub_tr );
             $("<input>").attr("type", "checkbox").appendTo(sub_td );
-            $("<td>").text(col_item["referenced_table_name"]).appendTo(sub_tr );
+            $("<td>").text(sel_tables.indexOf(col_item["referenced_table_name"]) > -1 ? col_item["referenced_table_name"] : "").appendTo(sub_tr );
             sub_td = $("<td>").appendTo(sub_tr );
             if (col_item["data_type"] == "enum"){
                 $("<input>").val(col_item["column_default"]).appendTo(sub_td );
@@ -181,7 +181,7 @@ function switch_wizard(index, direction ){
             $("#statis-wrap").removeClass("hide");
             $("#prev_btn").removeClass("hide");
             $("#next_btn").addClass("hide");
-            $("#selected_table").val(count(sel_tables).length + " tables are selected");
+            $("#selected_table").text(sel_tables.length + " tables are selected");
             break;
     }
 }
