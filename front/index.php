@@ -14,7 +14,7 @@
             <div class="mt-1r mb-1r table-info hide" id="table-info"></div>
             <div class="mt-1r mb-1r statis-wrap hide" id="statis-wrap">
                 <h4 id="selected_table"></h4>
-                <button class="btn btn-primary mt-1r mb-1r">Generate</button>
+                <button class="btn btn-primary mt-1r mb-1r" id="gen_btn">Generate</button>
             </div>
         </div>
     </div>

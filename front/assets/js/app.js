@@ -10,7 +10,24 @@ $(document).ready(function(){
     load_table_list();
     $("#prev_btn").on("click", prev_wizard );
     $("#next_btn").on("click", next_wizard );
+    $("#gen_btn").on("click", generate_api );
 });
+
+function generate_api(){
+    $.ajax({
+        url: base_api_url + "generate/generate",
+        data: {
+            table_infos: JSON.stringify(table_infos)
+        },
+        type: "post",
+        dataType: "json",
+        success: function(data ){
+            console.log(data );
+            if (data["status"] == "success"){
+            }
+        }
+    });
+}
 
 function initialize(){
     base_url = $("#base_url").val();
@@ -21,7 +38,7 @@ function initialize(){
 
 function load_table_list(){
     $.ajax({
-        url: base_api_url + "showtables",
+        url: base_api_url + "generate/showtables",
         data: {},
         type: "get",
         dataType: "json",
@@ -50,7 +67,7 @@ function init_table_list(data ){
 
 function load_table_infos(){
     $.ajax({
-        url: base_api_url + "tables",
+        url: base_api_url + "generate/tables",
         data: {
             tables: JSON.stringify(sel_tables)
         },
@@ -65,12 +82,13 @@ function load_table_infos(){
 }
 
 function init_table_info(data ){
+    table_infos = data;
     var parent = $("#table-info");
     $(parent).html("");
     var table = $("<table>").addClass("table").appendTo(parent );
 
-    for (var i = 0; i < data.length; i++ ){
-        var item = data[i];
+    for (var i = 0; i < table_infos.length; i++ ){
+        var item = table_infos[i];
         var table_name = item["table_name"];
         var columns = item["columns"];
         var tr = $("<tr>").appendTo(table );
@@ -102,6 +120,9 @@ function init_table_info(data ){
             $("<input>").attr("type", "checkbox").appendTo(sub_td );
             sub_td = $("<td>").appendTo(sub_tr );
             $("<input>").attr("type", "checkbox").appendTo(sub_td );
+
+            var referenced_table_name = sel_tables.indexOf(col_item["referenced_table_name"]) > -1 ? col_item["referenced_table_name"] : "";
+            table_infos[i]["columns"][j]["referenced_table_name"] = referenced_table_name;
             $("<td>").text(sel_tables.indexOf(col_item["referenced_table_name"]) > -1 ? col_item["referenced_table_name"] : "").appendTo(sub_tr );
             sub_td = $("<td>").appendTo(sub_tr );
             if (col_item["data_type"] == "enum"){
@@ -131,9 +152,10 @@ function next_wizard(){
     switch(wizard_index ){
         case 1:
             sel_tables = get_sel_tables();
-        case 2:
-            table_infos = get_table_infos();
             break;
+        //case 2:
+        //    table_infos = get_table_infos();
+        //    break;
         case 3:
             return;
     }

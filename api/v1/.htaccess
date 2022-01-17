@@ -1,7 +1,15 @@
-RewriteEngine On
+#RewriteEngine On
 
-RewriteRule ^showtables/?$ showtables.php [NC,L]
-RewriteRule ^showtables/([0-9]+)/?$ showtables.php?id=$1 [NC,L]
+#RewriteRule ^showtables/?$ showtables.php [NC,L]
+#RewriteRule ^showtables/([0-9]+)/?$ showtables.php?id=$1 [NC,L]
 
-RewriteRule ^tables/?$ tables.php [NC,L]
-RewriteRule ^tables/([0-9]+)/?$ tables.php?id=$1 [NC,L]
+#RewriteRule ^tables/?$ tables.php [NC,L]
+#RewriteRule ^tables/([0-9]+)/?$ tables.php?id=$1 [NC,L]
+
+#RewriteRule ^generate/?$ generate.php [NC,L]
+#RewriteRule ^generate/([0-9]+)/?$ generate.php?id=$1 [NC,L]
+
+Options +FollowSymLinks
+RewriteEngine on
+
+RewriteRule ^([a-z0-9_-]+)/([a-z0-9_-]+)(/)?$ index.php?call=$1&action=$2 [L] 

@@ -1,11 +1,6 @@
 <?php
-	include("../bootstrap.php");
-
-
-	$db = new dbObj();
-	$connection =  $db->getConnstring();
 	$request_method=$_SERVER["REQUEST_METHOD"];
-	
+
     switch($request_method)
 	{
 		case 'GET':
@@ -17,15 +12,28 @@
 	}
 
 	function handle_get_method(){
+		$sub_root_ind = 4;
+		$sub_folder_ind = 5;
 
+		$uri = $_SERVER["REQUEST_URI"];
+		$segments = explode('/', $uri );
+		
+		if (count($segments ) == $sub_folder_ind ){ 			// api/v1/showtables
+			handle_show_table();
+		}else{
+			handle_sub_method($segments[$sub_folder_ind]);
+		}
 	}
 
-	function handle_table_infos(){
+	function handle_post_method(){
+		header("HTTP/1.0 405 Method Not Allowed");
+	}
+
+	function handle_show_table(){
 		$db = $GLOBALS["db"];
-        $tables = $_POST["tables"];
-        $tables = json_decode($tables );
+
 		$result = ["status"=> "success"];
-		$data = $db->table_infos($tables );
+		$data = $db->show_tables();
 		$result["data"] = $data;
 		response_data(200, $result );
 	}
@@ -33,20 +41,6 @@
 	function handle_sub_method($seg ){
 		$result = ["status"=> "success"];
 		response_data(200, $result );
-	}
-
-	function handle_post_method(){
-		$sub_root_ind = 3;
-		$sub_folder_ind = 4;
-
-		$uri = $_SERVER["REQUEST_URI"];
-		$segments = explode('/', $uri );
-		
-		if (count($segments ) == $sub_folder_ind ){ 			// api/v1/tables
-			handle_table_infos();
-		}else{
-			handle_sub_method($segments[$sub_folder_ind]);
-		}
 	}
 
 	function response_data($code, $data ){
