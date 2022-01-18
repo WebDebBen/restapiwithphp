@@ -10,7 +10,15 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="table-list mt-1r mb-1r" id="table-list"></div>
+            <div class="mt-1r mb-1r" id="table-list">
+                <div class="row mt-1r mb-1r">
+                    <div class="col-md-12">
+                        <input class="form-check-input all-check" type="checkbox" id="all-table-check">
+                        <label class="form-check-label table-label" for="all-table-check">Check/Uncheck All</label>
+                    </div>
+                </div>
+                <div class="table-list" id="table-wrap"></div>
+            </div>
             <div class="mt-1r mb-1r table-info hide" id="table-info"></div>
             <div class="mt-1r mb-1r statis-wrap hide" id="statis-wrap">
                 <h4 id="selected_table"></h4>

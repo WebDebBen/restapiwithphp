@@ -11,13 +11,24 @@ $(document).ready(function(){
     $("#prev_btn").on("click", prev_wizard );
     $("#next_btn").on("click", next_wizard );
     $("#gen_btn").on("click", generate_api );
+    $("#all-table-check").on("click", check_table_all );
 });
+
+function check_table_all(){
+    var is_checked = $(this).is(":checked");
+    if (is_checked ){
+        $(".table-check").prop("checked", true );
+    }else{
+        $(".table-check").removeAttr("checked");
+    }
+}
 
 function generate_api(){
     $.ajax({
         url: base_api_url + "generate/generate",
         data: {
-            table_infos: JSON.stringify(table_infos)
+            table_infos: JSON.stringify(table_infos),
+            tables: JSON.stringify(sel_tables )
         },
         type: "post",
         dataType: "json",
@@ -51,7 +62,7 @@ function load_table_list(){
 }
 
 function init_table_list(data ){
-    var parent = $("#table-list");
+    var parent = $("#table-wrap");
 
     for(var i = 0; i < data.length; i++ ){
         var item = data[i];
