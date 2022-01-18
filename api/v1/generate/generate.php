@@ -103,7 +103,7 @@
         $php .= "\t" . '$get_params = isset($_POST) ? $_POST : []; ' . "\n";
 
         $php .= "\t" . '$model = new ' . $table_class . '($connection );' . "\n";
-        $php .= "\t" . '$data = $model->add_or_update($get_params ); ' . "\n";
+        $php .= "\t" . '$data = $model->update($get_params ); ' . "\n";
 
         $php .= "\t" . 'if ($data["result"] == true ){ ' . "\n";
             $php .= "\t" . 'http_response_code(200); ' . "\n";
@@ -191,8 +191,26 @@
         $php .= _model_get_record($columns );
         $php .= _model_table_join_data();
         $php .= _model_check_date();
+        $php .= _model_join_set_data();
 
         $php .= "} \n?>";
+        return $php;
+    }
+
+    function _model_join_set_data(){
+        $php = add_tab_endline('function join_set_data($data ){');
+            $php .= add_tab_endline('$comma = "";$str = "";', 2);
+            $php .= add_tab_endline('foreach($data as $item ){', 2);
+                $php .= add_tab_endline('if(!$item["value"]){ continue;}', 3);
+                $php .= add_tab_endline('if (strpos($item["type"], "int" ) > -1 || strpos($item["type"], "float" ) > -1 || strpos($item["type"], "double" ) > -1){', 3);
+                    $php .= add_tab_endline('$str .= $comma . $item["field"] . "=' . "'" . '" . $item["value"] . "' . "'" . '";', 4);
+                $php .= add_tab_endline('}else{', 3);
+					$php .= add_tab_endline('$str .= $comma . $item["field"] . "=' . "'" . '" . $item["value"] . "' . "'" . '";', 4);
+				$php .= add_tab_endline('}', 3);
+                $php .= add_tab_endline('$comma = ",";', 3 );
+            $php .= add_tab_endline('}', 2);
+            $php .= add_tab_endline('return $str;', 2);
+        $php .= add_tab_endline('}');
         return $php;
     }
 
@@ -240,8 +258,9 @@
         $php .= add_tab_endline('if ($' . $primary_field . ' == "" ){', 2 );
             $php .= add_tab_endline('$tmp = $this->create($params );', 3 );
         $php .= add_tab_endline('}else{', 2);
+            $php .= add_tab_endline('$query = "select * from {$this->table_name} where ' . $primary_field . '={$' . $primary_field . '}";', 3);
             $php .= add_tab_endline('$result = $this->conn->query($query );', 3);
-            $php .= add_tab_endline('if ($result->num_num_rows > 0 ){', 3);
+            $php .= add_tab_endline('if ($result->num_rows > 0 ){', 3);
                 $php .= add_tab_endline('$tmp = $this->update($params );', 4);
             $php .= add_tab_endline('}else{', 3);
                 $php .= add_tab_endline('$tmp = $this->create($params );', 4);
@@ -277,7 +296,7 @@
         $php .= add_tab_endline('$validate = [];', 2);
         $php .= _model_init_fields($columns );
         $php .= _model_init_primary_where($columns );
-        $php .= _model_init_insert($columns, "update " );
+        $php .= _model_init_update($columns );
         $primary_field = get_primary_field($columns );
         $php .= add_tab_endline('$query .= " WHERE ' . $primary_field . '={$' . $primary_field . '}";', 2);
         $php .= add_tab_endline('if($this->conn->query($query )){', 2);
@@ -302,9 +321,9 @@
     }
 
     function get_primary_field($columns ){
-        $primary_field = "";
-        foreach($columns as $item ){
-            if ($item->column_key == 'PRI'){
+        $primary_field = $columns[0]->column_name;
+        foreach($columns as $key=> $item ){
+            if ($item->extra == 'auto_increment'){
                 $primary_field = $item->column_name;
                 break;
             }
@@ -332,14 +351,44 @@
         return $php;
     }
 
-    function _model_init_insert($columns, $insert_update = "insert_into " ){
-        $php = add_tab_endline('$query = "' . $insert_update . ' {$this->table_name } set ";', 2 );
+    function _model_init_insert($columns){
+        $php = add_tab_endline('$query = "insert into {$this->table_name } set ";', 2 );
         $comma = ""; 
-        foreach($columns as $item ){
+        $colnames = [];
+        foreach($columns as $key=>$item ){
             $column_name = trim($item->column_name);
-            $php .= add_tab_endline('$query .= "' . $comma . ' ' . $column_name . '={$' . $column_name . '}";', 2);
-            $comma = ",";
+            if (array_search($column_name, $colnames )){
+            }else{
+                array_push($colnames, $column_name );
+                if ($item->extra != 'auto_increment'){
+                    if (strpos($item->data_type, 'int' ) > -1 || strpos($item->data_type, 'float' ) > -1 || strpos($item->data_type, 'double' ) > -1){
+                        $php .= add_tab_endline('$query .= $' . $column_name . ' ? "' . $comma . ' ' . $column_name . '={$' . $column_name . '}" : "";', 2);
+                    }else{
+                        $php .= add_tab_endline('$query .= $' . $column_name . ' ? "' . $comma . ' ' . $column_name . '=' . "'" . '{$' . $column_name . '}' . "'" . '" : "";', 2);
+                    }
+                    $comma = ",";
+                }
+            }
         }
+        return $php;
+    }
+
+    function _model_init_update($columns){
+        $php = add_tab_endline('$query = "update {$this->table_name } set ";', 2 );
+        $php .= add_tab_endline('$set_arr = [];', 2);
+        $comma = ""; 
+        $colnames = [];
+        foreach($columns as $key=>$item ){
+            $column_name = trim($item->column_name);
+            if (array_search($column_name, $colnames )){
+            }else{
+                array_push($colnames, $column_name );
+                if ($item->extra != 'auto_increment'){
+                    $php .= add_tab_endline('array_push($set_arr, ["field"=> "' . $column_name . '", "value"=> $' . $column_name . ', "type"=> "'. $item->data_type . '"]);', 2);
+                }
+            }
+        }
+        $php .= add_tab_endline('$query .= $this->join_set_data($set_arr );', 2);
         return $php;
     }
 
@@ -377,7 +426,6 @@
         $php .= add_tab_endline('}', 2);
 		$php .= add_tab_endline('return ["total"=> $retrieve_total, "data"=> $data ];', 2);
 
-
         $php .= add_tab_endline('}');
         return $php;
     }
@@ -386,7 +434,11 @@
         $php  = "";
         foreach ($columns as $item ){
             $column_name = trim($item->column_name );
-            $php .= add_tab_endline('$' . $column_name  . ' = isset($' . $column_name  . ') ? $' . $column_name  . ': "";', 2 );
+            if (strpos($item->data_type, 'int' ) > -1 || strpos($item->data_type, 'float' ) > -1 || strpos($item->data_type, 'double' ) > -1){
+                $php .= add_tab_endline('$' . $column_name  . ' = isset($' . $column_name  . ') ? $' . $column_name  . ': NULL;', 2 );
+            }else{
+                $php .= add_tab_endline('$' . $column_name  . ' = isset($' . $column_name  . ') ? $' . $column_name  . ': "";', 2 );
+            }
             if ($flag == true && ($item->data_type == "date" || $item->data_type == "datetime")){
                 $php .= add_tab_endline('$FROM_' . $column_name  . ' = isset($FROM_' . $column_name  . ') ? $FROM_' . $column_name  . ': "";', 2 );
                 $php .= add_tab_endline('$TO_' . $column_name  . ' = isset($TO_' . $column_name  . ') ? $TO_' . $column_name  . ': "";', 2 );
@@ -418,11 +470,13 @@
 
     function _model_init_required($columns ){
         $php = "";
-        foreach ($columns as $item ){
+        foreach ($columns as $key=>$item ){
             $column_name = trim($item->column_name );
-            $php .= add_tab_endline('if ($' . $column_name . ' == ""){', 2 );
-            $php .= add_tab_endline('$validate["' . $column_name . '"] = "required";', 3);
-            $php .= add_tab_endline('}', 2);
+            if ($item->extra != 'auto_increment' && $item->is_nullable == 'NO'){
+                $php .= add_tab_endline('if ($' . $column_name . ' == ""){', 2 );
+                $php .= add_tab_endline('$validate["' . $column_name . '"] = "required";', 3);
+                $php .= add_tab_endline('}', 2);
+            }
         }
         return $php;
     }
