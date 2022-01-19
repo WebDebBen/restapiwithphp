@@ -1,6 +1,7 @@
 <?php
 	$request_method=$_SERVER["REQUEST_METHOD"];
-	
+	require_once("./generate/generate_json.php");
+
     switch($request_method)
 	{
 		case 'GET':
@@ -21,8 +22,22 @@
         foreach($table_infos as $item ){
             generate_api($item );
         }
-    }
 
+        $api_doc = generate_json($table_infos );
+        $time = date("Ymdhis");
+        $file_name ="apidocs_" . $time . ".json";
+        $path =  "./apidocs/" . $file_name;
+        $myfile = fopen($path, "w") or die("Unable to open file!");
+        fwrite($myfile, json_encode($api_doc));
+        fclose($myfile);
+
+        echo json_encode([
+            "status"=> "success",
+            "data"=> [
+                "apidoc"=> $file_name
+            ]
+        ]);
+    }
     
     function generate_api($item ){
         $table_name = $item->table_name;

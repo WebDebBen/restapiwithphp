@@ -32,9 +32,14 @@ function generate_api(){
         },
         type: "post",
         dataType: "json",
-        success: function(data ){
-            console.log(data );
+        success: function(data ){ 
             if (data["status"] == "success"){
+                var filename = data["data"]["apidoc"];
+                $("#generate_result h3").html("Successfully generated");
+                $("#generate_result .api_url").html("<a href='" + base_api_url + "apidocs/" + filename + "'>" + filename + "</a>");
+            }else{
+                $("#generate_result h3").html("Failed");
+                $("#generate_result .api_url").html("");
             }
         }
     });

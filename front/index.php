@@ -23,6 +23,10 @@
             <div class="mt-1r mb-1r statis-wrap hide" id="statis-wrap">
                 <h4 id="selected_table"></h4>
                 <button class="btn btn-primary mt-1r mb-1r" id="gen_btn">Generate</button>
+                <div id="generate_result">
+                    <h3 class="gen_status"></h3>
+                    <p class="api_url"></p>
+                </div>
             </div>
         </div>
     </div>
