@@ -23,10 +23,23 @@
             generate_api($item );
         }
 
+        $folder_name = "apidocs";
+        if (!file_exists($folder_name )){
+            mkdir($folder_name, 0700);
+        }
+
         $api_doc = generate_json($table_infos );
         $time = date("Ymdhis");
+        $file_name ="apidocs_" . $time . ".php";
+        $path =  $folder_name . "/" . $file_name;
+        $myfile = fopen($path, "w") or die("Unable to open file!");
+        fwrite($myfile, json_encode($api_doc));
+        fclose($myfile);
+
+
+        $time = date("Ymdhis");
         $file_name ="apidocs_" . $time . ".json";
-        $path =  "./apidocs/" . $file_name;
+        $path =  $folder_name . "/" . $file_name;
         $myfile = fopen($path, "w") or die("Unable to open file!");
         fwrite($myfile, json_encode($api_doc));
         fclose($myfile);

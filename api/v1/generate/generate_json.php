@@ -233,7 +233,7 @@
                     "name"=> trim($col->column_name),
                     "in"=> "query",
                     "description"=> trim($col->column_name),
-                    "required"=> $col->is_nullable == 'YES' ? false : true,
+                    "required"=> false,
                 ];
                 if ($col->referenced_table_name ){
                     //$tmp["schema"] = ['$ref' => "#/definitions/" .dashesToCamelCase($col->referenced_table_name)];
