@@ -18,6 +18,14 @@
     margin-right: 1rem;
 }
 
+.mt-24{
+    margin-top: 24px;
+}
+
+.mt-30{
+    margin-top: 30px;
+}
+
 .hide{
     display: none !important;
 }
@@ -29,4 +37,47 @@
 .table-list{
     display: flex;
     flex-wrap: wrap;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.database-gen .row{
+    margin: 1rem 0;
+}
+
+.table-prop-item{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.table-prop-item .fa-arrows{
+    width: 50px;
+    cursor: pointer;
+}
+
+.field-props-wrap{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.field-prpos{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.add-props-edit{
+    font-size: 14px;
 }

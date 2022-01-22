@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="./assets/js/jquery-2.2.4.js"></script>
 	<script type="text/javascript" src="./assets/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./assets/js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="./assets/js/Sortable.js"></script>
 </head>
 <body>
     <input type="hidden" id="base_url" value="<?php echo BASE_URL; ?>"/>
@@ -30,6 +31,9 @@
 					<ul class="nav pull-right">
 						<li class="active">
 							<a href="/front">Dashboard</a>
+						</li>
+						<li class="active ml-1r">
+							<a href="/front/datatable.php">Generator</a>
 						</li>
 					</ul>
 				</div>
