@@ -9,11 +9,14 @@
 	<link rel="stylesheet" type="text/css" href="./assets/css/style.css">
 	<link rel="stylesheet" type="text/css" href="./assets/font-awesome/css/font-awesome.css">
 	<link rel="stylesheet" type="text/css" href="./assets/css/toastr.css">
+	<link rel="stylesheet" type="text/css" href="./assets/plugins/highlight/jquery.highlight.css">
 	
 	<script type="text/javascript" src="./assets/js/jquery-2.2.4.js"></script>
 	<script type="text/javascript" src="./assets/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="./assets/js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="./assets/js/toastr.js"></script>
 	<script type="text/javascript" src="./assets/js/Sortable.js"></script>
+	<script type="text/javascript" src="./assets/plugins/highlight/jquery.highlight.js"></script>
 </head>
 <body>
     <input type="hidden" id="base_url" value="<?php echo BASE_URL; ?>"/>

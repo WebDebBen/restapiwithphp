@@ -26,6 +26,10 @@
     margin-top: 30px;
 }
 
+.mt-10{
+    margin-top: 10px;
+}
+
 .hide{
     display: none !important;
 }
@@ -80,4 +84,23 @@
 
 .add-props-edit{
     font-size: 14px;
+    color: #000;
+}
+
+.column-detail-modal .modal-body{
+    padding: 1rem 3rem;
+}
+
+.full-width{
+    width: 100%;
+}
+
+.field-required{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#table-property >.table-prop-item:not(:first-child) label{
+    opacity: 0;
 }
